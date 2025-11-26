@@ -1,41 +1,57 @@
-// Fallback for using MaterialIcons on Android and web.
+// Icon wrapper using Phosphor Icons for modern stroke-based iconography
+// Phosphor provides consistent, scalable icons with multiple weight options
 
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { SymbolWeight, SymbolViewProps } from 'expo-symbols';
-import { ComponentProps } from 'react';
-import { OpaqueColorValue, type StyleProp, type TextStyle } from 'react-native';
+import {
+  CaretRight,
+  ChartBar,
+  Clock,
+  Code,
+  Fire,
+  Gear,
+  House,
+  Lock,
+  PaperPlaneTilt,
+  TennisBall,
+  Users
+} from 'phosphor-react-native';
+import { OpaqueColorValue, type StyleProp, type ViewStyle } from 'react-native';
 
-type IconMapping = Record<SymbolViewProps['name'], ComponentProps<typeof MaterialIcons>['name']>;
-type IconSymbolName = keyof typeof MAPPING;
+// Map SF Symbol names to Phosphor icon components
+const ICON_MAPPING = {
+  'house.fill': House,
+  'paperplane.fill': PaperPlaneTilt,
+  'chevron.left.forwardslash.chevron.right': Code,
+  'chevron.right': CaretRight,
+  'clock.fill': Clock,
+  'gearshape.fill': Gear,
+  'chart.bar.fill': ChartBar,
+  'sportscourt.fill': TennisBall,
+  'flame.fill': Fire,
+  'lock.fill': Lock,
+  'figure.pickleball': TennisBall,
+  'person.2.fill': Users,
+} as const;
+
+type IconSymbolName = keyof typeof ICON_MAPPING;
 
 /**
- * Add your SF Symbols to Material Icons mappings here.
- * - see Material Icons in the [Icons Directory](https://icons.expo.fyi).
- * - see SF Symbols in the [SF Symbols](https://developer.apple.com/sf-symbols/) app.
- */
-const MAPPING = {
-  'house.fill': 'home',
-  'paperplane.fill': 'send',
-  'chevron.left.forwardslash.chevron.right': 'code',
-  'chevron.right': 'chevron-right',
-} as IconMapping;
-
-/**
- * An icon component that uses native SF Symbols on iOS, and Material Icons on Android and web.
- * This ensures a consistent look across platforms, and optimal resource usage.
- * Icon `name`s are based on SF Symbols and require manual mapping to Material Icons.
+ * An icon component that uses Phosphor Icons for a modern, stroke-based aesthetic.
+ * Provides consistent iconography across all platforms with customizable weights.
+ * Icon `name`s are based on SF Symbols for backward compatibility.
  */
 export function IconSymbol({
   name,
   size = 24,
   color,
   style,
+  weight = 'fill',
 }: {
   name: IconSymbolName;
   size?: number;
   color: string | OpaqueColorValue;
-  style?: StyleProp<TextStyle>;
-  weight?: SymbolWeight;
+  style?: StyleProp<ViewStyle>;
+  weight?: 'thin' | 'light' | 'regular' | 'bold' | 'fill' | 'duotone';
 }) {
-  return <MaterialIcons color={color} size={size} name={MAPPING[name]} style={style} />;
+  const IconComponent = ICON_MAPPING[name];
+  return <IconComponent size={size} color={color as string} weight={weight} style={style} />;
 }
