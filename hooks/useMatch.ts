@@ -1,6 +1,8 @@
+import { useAuth } from '@/context/AuthContext';
+import { storage } from '@/lib/storage';
 import { supabase } from '@/lib/supabase';
 import type { MatchAction, MatchSetup, MatchState, MatchSummary } from '@/types/match';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState }react';
 
 /**
  * Core hook for managing match state
@@ -167,9 +169,13 @@ export function useMatch(initialSetup?: MatchSetup) {
     /**
      * Save match to database
      */
+    const { user, guestId } = useAuth();
+
     const saveMatch = useCallback(async (summary: MatchSummary): Promise<{ success: boolean; error?: string }> => {
         try {
-            const { error } = await supabase.from('matches').insert({
+            const userId = user?.id || guestId;
+
+            const matchData = {
                 score_p1: summary.finalScoreA,
                 score_p2: summary.finalScoreB,
                 match_type: summary.matchType,
@@ -180,11 +186,14 @@ export function useMatch(initialSetup?: MatchSetup) {
                 rally_count: summary.rallyCount,
                 server: matchState.server,
                 ended_at: summary.endedAt.toISOString(),
-            });
+                is_active: false, // Completed matches are not active
+            };
 
-            if (error) {
-                console.error('Error saving match:', error);
-                return { success: false, error: error.message };
+            const result = await storage.saveMatch(matchData, userId || undefined);
+
+            if (!result.success) {
+                console.error('Error saving match:', result.error);
+                return { success: false, error: result.error };
             }
 
             return { success: true };
@@ -192,7 +201,7 @@ export function useMatch(initialSetup?: MatchSetup) {
             console.error('Unexpected error saving match:', e);
             return { success: false, error: 'An unexpected error occurred' };
         }
-    }, [matchState]);
+    }, [matchState, user, guestId]);
 
     /**
      * Check if match is won

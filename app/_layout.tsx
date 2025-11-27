@@ -1,4 +1,5 @@
 import ActiveMatchBar from '@/components/ActiveMatchBar';
+import { AuthProvider } from '@/context/AuthContext';
 import { MatchProvider } from '@/context/MatchContext';
 import { SubscriptionProvider } from '@/context/SubscriptionContext';
 import { ThemeProvider } from '@/context/ThemeContext';
@@ -39,38 +40,43 @@ export default function Layout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider>
-        <SubscriptionProvider>
-          <MatchProvider>
-            <Stack
-              screenOptions={{
-                headerShown: false,
-                animation: 'slide_from_right',
-                gestureEnabled: true,
-                gestureDirection: 'horizontal',
-              }}
-            >
-              <Stack.Screen name="(tabs)" />
-              <Stack.Screen
-                name="match-setup"
-                options={{
-                  presentation: 'modal',
-                  animation: 'slide_from_bottom',
-                }}
-              />
-              <Stack.Screen
-                name="live-match"
-                options={{
+        <AuthProvider>
+          <SubscriptionProvider>
+            <MatchProvider>
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                  animation: 'slide_from_right',
                   gestureEnabled: true,
                   gestureDirection: 'horizontal',
                 }}
-              />
-              <Stack.Screen name="match-summary" options={{ presentation: 'modal' }} />
-              <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-            </Stack>
-            <ActiveMatchBar />
-            <StatusBar style="auto" />
-          </MatchProvider>
-        </SubscriptionProvider>
+              >
+                <Stack.Screen name="(tabs)" />
+                <Stack.Screen name="welcome" options={{ gestureEnabled: false }} />
+                <Stack.Screen name="auth/sign-in" options={{ presentation: 'modal' }} />
+                <Stack.Screen name="auth/sign-up" options={{ presentation: 'modal' }} />
+                <Stack.Screen
+                  name="match-setup"
+                  options={{
+                    presentation: 'modal',
+                    animation: 'slide_from_bottom',
+                  }}
+                />
+                <Stack.Screen
+                  name="live-match"
+                  options={{
+                    gestureEnabled: true,
+                    gestureDirection: 'horizontal',
+                  }}
+                />
+                <Stack.Screen name="match-summary" options={{ presentation: 'modal' }} />
+                <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+              </Stack>
+              <ActiveMatchBar />
+              <StatusBar style="auto" />
+            </MatchProvider>
+          </SubscriptionProvider>
+        </AuthProvider>
       </ThemeProvider>
     </GestureHandlerRootView>
   );

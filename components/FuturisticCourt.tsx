@@ -68,16 +68,16 @@ export default function FuturisticCourt() {
 const styles = StyleSheet.create({
     container: {
         ...StyleSheet.absoluteFillObject,
-        backgroundColor: '#0f172a', // Dark Slate
+        backgroundColor: '#1e293b', // Lighter slate for better web visibility
         zIndex: -1,
     },
     base: {
         ...StyleSheet.absoluteFillObject,
-        backgroundColor: '#020617', // Almost Black
+        backgroundColor: '#0f172a', // Dark slate base
     },
     glowLayer: {
         ...StyleSheet.absoluteFillObject,
-        backgroundColor: '#1e1b4b', // Deep Indigo
+        backgroundColor: '#312e81', // Brighter indigo for better visibility
     },
     courtLines: {
         ...StyleSheet.absoluteFillObject,

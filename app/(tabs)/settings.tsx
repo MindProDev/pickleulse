@@ -1,4 +1,5 @@
 import { getThemedColors, Typography } from '@/constants/theme';
+import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { showAlert } from '@/utils/alert';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -28,6 +29,7 @@ const DEFAULT_SETTINGS: Settings = {
 export default function SettingsScreen() {
     const { themeMode, actualTheme, setThemeMode } = useTheme();
     const colors = getThemedColors(actualTheme);
+    const { signOut, user, isGuest } = useAuth();
     const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
     const [loading, setLoading] = useState(true);
 

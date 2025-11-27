@@ -216,7 +216,7 @@ export default function LiveMatchScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#0f172a',
+        backgroundColor: '#1e293b', // Lighter slate for better web visibility
     },
     safeArea: {
         flex: 1,
@@ -244,18 +244,23 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 24,
         justifyContent: 'center',
+        alignItems: 'center', // Center horizontally for web
+        maxWidth: 600, // Constrain width on large screens
+        width: '100%',
+        alignSelf: 'center',
     },
     scoreCard: {
-        backgroundColor: 'rgba(30, 41, 59, 0.9)', // Dark Slate with opacity
+        backgroundColor: 'rgba(15, 23, 42, 0.95)', // Darker, more opaque for better contrast
         borderRadius: 32,
         overflow: 'hidden',
-        borderWidth: 1,
-        borderColor: '#334155',
+        borderWidth: 2, // Thicker border
+        borderColor: '#22d3ee', // Bright cyan border
         shadowColor: '#22d3ee', // Cyan glow
         shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.2,
-        shadowRadius: 20,
+        shadowOpacity: 0.4, // Stronger glow
+        shadowRadius: 24,
         elevation: 10,
+        width: '100%', // Full width within constrained content
     },
     teamSection: {
         padding: 32,
@@ -276,7 +281,7 @@ const styles = StyleSheet.create({
     },
     teamName: {
         ...Typography.h3,
-        color: '#94a3b8',
+        color: '#cbd5e1', // Brighter text for better readability
         textAlign: 'center',
         marginBottom: 8,
     },

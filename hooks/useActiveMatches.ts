@@ -1,4 +1,5 @@
-import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/context/AuthContext';
+import { storage } from '@/lib/storage';
 import type { Match } from '@/types/match';
 import { useCallback, useState } from 'react';
 
@@ -11,6 +12,8 @@ export function useActiveMatches() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    const { user, guestId } = useAuth();
+
     /**
      * Fetch all active matches for the current user
      */
@@ -19,14 +22,11 @@ export function useActiveMatches() {
             setLoading(true);
             setError(null);
 
-            const { data, error: fetchError } = await supabase
-                .from('matches')
-                .select('*')
-                .eq('is_active', true)
-                .order('created_at', { ascending: false });
+            const userId = user?.id || guestId;
+            const { data, error: fetchError } = await storage.getActiveMatches(userId || undefined);
 
             if (fetchError) {
-                throw fetchError;
+                throw new Error(fetchError);
             }
 
             setActiveMatches(data || []);
@@ -38,7 +38,7 @@ export function useActiveMatches() {
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [user, guestId]);
 
     /**
      * Get count of active matches
@@ -69,13 +69,15 @@ export function useActiveMatches() {
      */
     const markMatchInactive = useCallback(async (matchId: string): Promise<boolean> => {
         try {
-            const { error: updateError } = await supabase
-                .from('matches')
-                .update({ is_active: false })
-                .eq('id', matchId);
+            const userId = user?.id || guestId;
+            const { error: updateError } = await storage.updateMatch(
+                matchId,
+                { is_active: false },
+                userId || undefined
+            );
 
             if (updateError) {
-                throw updateError;
+                throw new Error(updateError);
             }
 
             // Refresh active matches
@@ -86,7 +88,7 @@ export function useActiveMatches() {
             setError(e.message);
             return false;
         }
-    }, [fetchActiveMatches]);
+    }, [fetchActiveMatches, user, guestId]);
 
     return {
         activeMatches,

@@ -1,4 +1,5 @@
-import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/context/AuthContext';
+import { storage } from '@/lib/storage';
 import type { Match } from '@/types/match';
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
@@ -8,17 +9,18 @@ export function useMatchHistory() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
+    const { user, guestId } = useAuth();
+
     const fetchMatches = async () => {
         try {
             setLoading(true);
             setError(null);
-            const { data, error } = await supabase
-                .from('matches')
-                .select('*')
-                .order('created_at', { ascending: false });
+
+            const userId = user?.id || guestId;
+            const { data, error } = await storage.getMatches(userId || undefined);
 
             if (error) {
-                throw error;
+                throw new Error(error);
             }
 
             setMatches(data || []);
@@ -33,7 +35,7 @@ export function useMatchHistory() {
     useFocusEffect(
         useCallback(() => {
             fetchMatches();
-        }, [])
+        }, [user, guestId])
     );
 
     return {
