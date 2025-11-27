@@ -1,3 +1,5 @@
+
+import GoogleSignInButton from '@/components/GoogleSignInButton';
 import { getThemedColors, Typography } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -74,6 +76,14 @@ export default function SignUpScreen() {
                         <Text style={[styles.title, { color: colors.textPrimary }]}>Sign Up</Text>
                         <View style={{ width: 40 }} />
                     </View>
+
+                    <View style={styles.divider}>
+                        <View style={[styles.dividerLine, { backgroundColor: colors.border }]} />
+                        <Text style={[styles.dividerText, { color: colors.textSecondary }]}>or</Text>
+                        <View style={[styles.dividerLine, { backgroundColor: colors.border }]} />
+                    </View>
+
+                    <GoogleSignInButton />
 
                     {/* Form */}
                     <View style={styles.form}>

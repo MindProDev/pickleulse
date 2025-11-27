@@ -1,6 +1,8 @@
 import { supabase } from '@/lib/supabase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { Session, User } from '@supabase/supabase-js';
+import { makeRedirectUri } from 'expo-auth-session';
+import * as WebBrowser from 'expo-web-browser';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Platform } from 'react-native';
 
@@ -16,6 +18,7 @@ interface AuthContextType {
     signOut: () => Promise<void>;
     continueAsGuest: () => Promise<void>;
     upgradeGuestToAccount: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+    signInWithGoogle: () => Promise<{ success: boolean; error?: string }>;
     isGuest: boolean;
     isAuthenticated: boolean;
     isLoading: boolean;
@@ -173,6 +176,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
     }
 
+    async function signInWithGoogle() {
+        try {
+            const redirectUrl = makeRedirectUri({
+                scheme: 'picklepulse',
+                path: 'auth/callback',
+            });
+
+            const { data, error } = await supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    redirectTo: redirectUrl,
+                    skipBrowserRedirect: true,
+                },
+            });
+
+            if (error) throw error;
+
+            if (data.url) {
+                const result = await WebBrowser.openAuthSessionAsync(data.url, redirectUrl);
+                if (result.type === 'success') {
+                    return { success: true };
+                }
+            }
+
+            return { success: false, error: 'User cancelled or failed to sign in' };
+        } catch (error) {
+            return { success: false, error: String(error) };
+        }
+    }
+
     async function continueAsGuest() {
         try {
             const newGuestId = generateGuestId();
@@ -232,6 +265,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signOut,
         continueAsGuest,
         upgradeGuestToAccount,
+        signInWithGoogle,
         isGuest: mode === 'guest',
         isAuthenticated: mode === 'authenticated',
         isLoading: mode === 'loading',

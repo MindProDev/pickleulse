@@ -1,3 +1,4 @@
+import GoogleSignInButton from '@/components/GoogleSignInButton';
 import { getThemedColors, Typography } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -140,6 +141,8 @@ export default function SignInScreen() {
                             <Text style={[styles.dividerText, { color: colors.textTertiary }]}>or</Text>
                             <View style={[styles.dividerLine, { backgroundColor: colors.border }]} />
                         </View>
+
+                        <GoogleSignInButton />
 
                         {/* Guest Button */}
                         <TouchableOpacity
