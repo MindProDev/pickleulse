@@ -16,6 +16,13 @@ export default function Index() {
 
     async function checkWelcomeStatus() {
         try {
+            // Check if we're in a browser environment
+            if (Platform.OS === 'web' && typeof window === 'undefined') {
+                // Server-side rendering - default to false
+                setHasSeenWelcome(false);
+                return;
+            }
+
             const value = Platform.OS === 'web'
                 ? localStorage.getItem(HAS_SEEN_WELCOME_KEY)
                 : await AsyncStorage.getItem(HAS_SEEN_WELCOME_KEY);

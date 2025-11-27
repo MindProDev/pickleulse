@@ -38,12 +38,20 @@ function generateGuestId(): string {
 const storage = {
     getItem: async (key: string): Promise<string | null> => {
         if (Platform.OS === 'web') {
+            // Check if we're in a browser environment (not SSR)
+            if (typeof window === 'undefined') {
+                return null;
+            }
             return localStorage.getItem(key);
         }
         return AsyncStorage.getItem(key);
     },
     setItem: async (key: string, value: string): Promise<void> => {
         if (Platform.OS === 'web') {
+            // Check if we're in a browser environment (not SSR)
+            if (typeof window === 'undefined') {
+                return;
+            }
             localStorage.setItem(key, value);
         } else {
             await AsyncStorage.setItem(key, value);
@@ -51,6 +59,10 @@ const storage = {
     },
     removeItem: async (key: string): Promise<void> => {
         if (Platform.OS === 'web') {
+            // Check if we're in a browser environment (not SSR)
+            if (typeof window === 'undefined') {
+                return;
+            }
             localStorage.removeItem(key);
         } else {
             await AsyncStorage.removeItem(key);
