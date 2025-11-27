@@ -7,8 +7,9 @@ import { ActivityIndicator, Platform, View } from 'react-native';
 const HAS_SEEN_WELCOME_KEY = 'picklepulse_has_seen_welcome';
 
 export default function Index() {
-    const { mode, isLoading } = useAuth();
+    const { mode } = useAuth();
     const [hasSeenWelcome, setHasSeenWelcome] = useState<boolean | null>(null);
+    const [isChecking, setIsChecking] = useState(true);
 
     useEffect(() => {
         checkWelcomeStatus();
@@ -20,6 +21,7 @@ export default function Index() {
             if (Platform.OS === 'web' && typeof window === 'undefined') {
                 // Server-side rendering - default to false
                 setHasSeenWelcome(false);
+                setIsChecking(false);
                 return;
             }
 
@@ -29,11 +31,13 @@ export default function Index() {
             setHasSeenWelcome(value === 'true');
         } catch (error) {
             setHasSeenWelcome(false);
+        } finally {
+            setIsChecking(false);
         }
     }
 
-    // Show loading while checking auth state
-    if (isLoading || hasSeenWelcome === null) {
+    // Show loading only while checking welcome status
+    if (isChecking) {
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                 <ActivityIndicator size="large" color="#14b8a6" />
@@ -51,6 +55,6 @@ export default function Index() {
         return <Redirect href="/(tabs)" />;
     }
 
-    // Fallback - show welcome
+    // Fallback - show welcome (for users who have seen welcome but haven't chosen a mode yet)
     return <Redirect href="/welcome" />;
 }
