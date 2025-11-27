@@ -13,8 +13,29 @@ export function showAlert(
     }>
 ) {
     if (Platform.OS === 'web') {
-        // For web, use window.confirm for simple yes/no or window.alert for info
-        if (buttons && buttons.length > 1) {
+        // For web, handle multiple options
+        if (buttons && buttons.length > 2) {
+            // Create a numbered list of options
+            const options = buttons
+                .filter(b => b.style !== 'cancel')
+                .map((b, i) => `${i + 1}. ${b.text}`)
+                .join('\n');
+
+            const promptMessage = `${message || ''}\n\n${options}\n\nEnter number (or press Cancel):`;
+            const result = window.prompt(title + '\n\n' + promptMessage);
+
+            if (result) {
+                const index = parseInt(result) - 1;
+                const nonCancelButtons = buttons.filter(b => b.style !== 'cancel');
+                if (index >= 0 && index < nonCancelButtons.length) {
+                    nonCancelButtons[index]?.onPress?.();
+                }
+            } else {
+                // User cancelled
+                const cancelButton = buttons.find(b => b.style === 'cancel');
+                cancelButton?.onPress?.();
+            }
+        } else if (buttons && buttons.length > 1) {
             const result = window.confirm(`${title}\n\n${message || ''}`);
             if (result) {
                 // Find the non-cancel button
