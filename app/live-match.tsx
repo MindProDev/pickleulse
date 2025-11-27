@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     activeServer: {
-        backgroundColor: 'rgba(34, 211, 238, 0.1)', // Subtle cyan tint
+        backgroundColor: 'rgba(34, 197, 94, 0.15)', // Vibrant green tint for active server
     },
     divider: {
         height: 1,
@@ -301,7 +301,8 @@ const styles = StyleSheet.create({
         textTransform: 'uppercase',
     },
     scoreBig: {
-        ...Typography.scoreLarge,
+        fontSize: 96, // Reduced from Typography.scoreLarge (120)
+        fontWeight: '800',
         color: '#f8fafc',
         fontVariant: ['tabular-nums'],
         textShadowColor: 'rgba(255, 255, 255, 0.2)',
@@ -317,13 +318,13 @@ const styles = StyleSheet.create({
     controlButton: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: 'rgba(30, 41, 59, 0.8)',
+        backgroundColor: 'rgba(51, 65, 85, 0.9)', // Lighter, more visible background
         paddingHorizontal: 24,
         paddingVertical: 16,
         borderRadius: 16,
         gap: 8,
         borderWidth: 1,
-        borderColor: '#334155',
+        borderColor: '#475569', // Brighter border
     },
     controlButtonDisabled: {
         opacity: 0.5,

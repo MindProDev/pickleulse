@@ -3,7 +3,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { router } from 'expo-router';
 import { Sparkle, TennisBall, UserCircle } from 'phosphor-react-native';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -23,7 +23,11 @@ export default function WelcomeScreen() {
 
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: colors.backgroundPrimary }]}>
-            <View style={styles.content}>
+            <ScrollView
+                style={styles.scrollView}
+                contentContainerStyle={styles.content}
+                showsVerticalScrollIndicator={false}
+            >
                 {/* Header */}
                 <Animated.View entering={FadeInUp.delay(100)} style={styles.header}>
                     <TennisBall size={64} color={colors.accent} weight="duotone" />
@@ -98,7 +102,7 @@ export default function WelcomeScreen() {
                         You can upgrade from guest to account anytime
                     </Text>
                 </Animated.View>
-            </View>
+            </ScrollView>
         </SafeAreaView>
     );
 }
@@ -107,8 +111,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    content: {
+    scrollView: {
         flex: 1,
+    },
+    content: {
+        flexGrow: 1,
         padding: 24,
         justifyContent: 'space-between',
     },
